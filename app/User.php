@@ -5,10 +5,19 @@ namespace App;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class User extends Authenticatable
 {
     use Notifiable;
+    use SoftDeletes;
+
+    /**
+     * The attributes that should be mutated to dates.
+     *
+     * @var array
+     */
+    protected $dates = ['deleted_at', 'last_login'];
 
     /**
      * The attributes that are mass assignable.
@@ -50,4 +59,44 @@ class User extends Authenticatable
 //     {
 //         return decrypt($value);
 //     }
+
+    /**
+     * Get associated fields
+     * 
+     * @return void
+     */
+    public function branch_dept()
+    {
+        return $this->belongsTo('App\BranchDept', 'branchdept_id')->withDefault();
+    }
+
+    public function user_type()
+    {
+        return $this->belongsTo('App\UserType', 'usertype_id')->withDefault();
+    }
+
+    public function user_msgs()
+    {
+        return $this->hasMany('App\UserMsg', 'user_id');
+    }
+
+    public function exec_trays()
+    {
+        return $this->hasMany('App\ExecTray', 'user_id');
+    }
+
+    public function activities()
+    {
+        return $this->hasMany('App\Activity', 'user_id');
+    }
+
+    /**
+     * Get the easy to read request date for the ticket.
+     *
+     * @return string
+     */
+    public function getLastLoginByAgoAttribute()
+    {
+        return ($this->last_login == null) ? "" : $this->last_login->diffForHumans();
+    }
 }

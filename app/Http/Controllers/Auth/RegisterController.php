@@ -73,24 +73,24 @@ class RegisterController extends Controller
         ]);
     }
 
-    public function register(Request $request)
-    {
-        $this->validator($request->all())->validate();
+    // public function register(Request $request)
+    // {
+    //     $this->validator($request->all())->validate();
 
-        $google2fa = app('pragmarx.google2fa');
-        $registration_data = $request->all();
-        $registration_data["google2fa_secret"] = $google2fa->generateSecretKey();
+    //     $google2fa = app('pragmarx.google2fa');
+    //     $registration_data = $request->all();
+    //     $registration_data["google2fa_secret"] = $google2fa->generateSecretKey();
 
-        $request->session()->flash('registration_data', $registration_data);
+    //     $request->session()->flash('registration_data', $registration_data);
 
-        $QR_Image = $google2fa->getQRCodeInline(
-            config('app.name'),
-            $registration_data['email'],
-            $registration_data['google2fa_secret']
-        );
+    //     $QR_Image = $google2fa->getQRCodeInline(
+    //         config('app.name'),
+    //         $registration_data['email'],
+    //         $registration_data['google2fa_secret']
+    //     );
 
-        return view('google2fa.register', ['QR_Image' => $QR_Image, 'secret' => $registration_data['google2fa_secret']]);
-    }
+    //     return view('google2fa.register', ['QR_Image' => $QR_Image, 'secret' => $registration_data['google2fa_secret']]);
+    // }
 
     // public function completeRegistration(Request $request)
     // {        
