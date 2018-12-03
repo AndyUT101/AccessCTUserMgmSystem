@@ -16,6 +16,7 @@ class CreatePushMsgsTable extends Migration
         Schema::create('push_msgs', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('msgtpl_id');
+            $table->unsignedInteger('user_id');
             $table->json('parameters');
             $table->unsignedTinyInteger('tg_sent')->default(0);
             $table->unsignedTinyInteger('mail_sent')->default(0);

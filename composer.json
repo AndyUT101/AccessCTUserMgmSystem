@@ -9,8 +9,10 @@
         "bacon/bacon-qr-code": "1.0.3",
         "doctrine/dbal": "^2.8",
         "fideloper/proxy": "^4.0",
+        "kris/laravel-form-builder": "^1.15",
         "laravel/framework": "5.7.*",
         "laravel/tinker": "^1.0",
+        "lavary/laravel-menu": "^1.7",
         "pragmarx/google2fa-laravel": "^0.2.0",
         "webpatser/laravel-uuid": "^3.0"
     },

@@ -7,13 +7,29 @@ use Illuminate\Http\Request;
 class SvcEquipItemsController extends Controller
 {
     /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
     public function index()
     {
-        //
+        // $dataset = User::paginate($this->paginate);
+        // $dataset->load('branch_dept', 'user_type');
+
+        return view('request_items.index', [
+            'dataset' => null,
+            ]
+        );
     }
 
     /**

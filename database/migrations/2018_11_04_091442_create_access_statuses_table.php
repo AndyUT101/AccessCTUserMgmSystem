@@ -16,6 +16,7 @@ class CreateAccessStatusesTable extends Migration
         Schema::create('access_statuses', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('svcequipitem_id');
+            $table->unsignedInteger('user_id');
             $table->unsignedInteger('status');
             $table->unsignedTinyInteger('is_pending')->default(1);
             $table->dateTime('request_enddate');

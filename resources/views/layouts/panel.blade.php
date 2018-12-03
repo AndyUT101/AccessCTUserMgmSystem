@@ -27,7 +27,7 @@
             <div class="peer peer-greed"><a class="sidebar-link td-n" href="{{ url('/') }}">
                 <div class="peers ai-c fxw-nw">
                   <div class="peer">
-                    <div class="logo"><img src="assets/static/images/logo.png" alt=""></div>
+                    <div class="logo"><img src="{{ url('/') }}/img/logo.png" alt=""></div>
                   </div>
                   <div class="peer peer-greed">
                     <h5 class="lh-1 mB-0 logo-text">User Manage System</h5>
@@ -44,23 +44,29 @@
                   class="c-red-800 ti-home"></i> </span><span class="title">Dashboard</span></a></li>
           <li class="nav-item dropdown"><a class="dropdown-toggle" href="javascript:void(0);"><span class="icon-holder"><i
                   class="c-purple-500 ti-write"></i> </span><span class="title">Request</span> <span class="arrow"><i class="ti-angle-right"></i></span></a>
-            <ul class="dropdown-menu">
-              <li><a href="#">IT service</a></li>
-              <li><a href="#">Computer equipment</a></li>
-            </ul>
+            {!! $MyNavBar->asUl( ['class' => 'dropdown-menu'] ) !!}
+
+            
           </li>
           <li class="nav-item dropdown"><a class="dropdown-toggle" href="javascript:void(0);"><span class="icon-holder"><i class="c-brown-500 ti-id-badge"></i>
               </span><span class="title">User management</span> <span class="arrow"><i class="ti-angle-right"></i></span></a>
             <ul class="dropdown-menu">
               <li><a href="#">Access right control</a></li>
-              <li><a href="#">Account management</a></li>
-              <li><a href="{{ route('user.index') }}">User list</a></li>
+              <li><a href="{{ url('acc_manage') }}">Account management</a></li>
             </ul>
           </li>
-          <li class="nav-item"><a class="sidebar-link" href="#"><span class="icon-holder"><i class="c-red-600 ti-signal"></i>
-              </span><span class="title">Request management</span></a></li>
-          <li class="nav-item"><a class="sidebar-link" href="#"><span class="icon-holder"><i class="c-purple-400 ti-direction-alt"></i>
-              </span><span class="title">Branch and department</span></a></li>
+          <li class="nav-item"><a class="sidebar-link" href="{{ route('rq.status') }}"><span class="icon-holder"><i class="c-red-600 ti-files"></i>
+              </span><span class="title">Request tray</span></a></li>
+          <li class="nav-item dropdown"><a class="dropdown-toggle" href="javascript:void(0);"><span class="icon-holder"><i
+                  class="c-purple-500 ti-settings"></i> </span><span class="title">Setting</span> <span class="arrow"><i class="ti-angle-right"></i></span></a>
+            <ul class="dropdown-menu">
+              <li><a href="{{ url('com_req') }}">Request management</a></li>
+              <li><a href="#">Branch and department</a></li>
+              <li><a href="#">Login management</a></li>
+              <li><a href="{{ route('user.index') }}">User list</a></li>
+              <li><a href="{{ route('zone.index') }}">Zone list</a></li>
+            </ul>
+          </li>
         </ul>
       </div>
     </div>
@@ -81,26 +87,20 @@
                 <li>
                   <ul class="ovY-a pos-r scrollable lis-n p-0 m-0 fsz-sm">
                     <li><a href="" class="peers fxw-nw td-n p-20 bdB c-grey-800 cH-blue bgcH-grey-100">
-                        <div class="peer mR-15"><img class="w-3r bdrs-50p" src="https://randomuser.me/api/portraits/men/1.jpg"
-                            alt=""></div>
-                        <div class="peer peer-greed"><span><span class="fw-500">John Doe</span> <span class="c-grey-600">liked
-                              your <span class="text-dark">post</span></span></span>
+                        <div class="peer mR-15"></div>
+                        <div class="peer peer-greed"><span>You haven't set the Google 2FA yet. Click here to setup.</span>
                           <p class="m-0"><small class="fsz-xs">5 mins ago</small></p>
                         </div>
                       </a></li>
                     <li><a href="" class="peers fxw-nw td-n p-20 bdB c-grey-800 cH-blue bgcH-grey-100">
-                        <div class="peer mR-15"><img class="w-3r bdrs-50p" src="https://randomuser.me/api/portraits/men/2.jpg"
-                            alt=""></div>
-                        <div class="peer peer-greed"><span><span class="fw-500">Moo Doe</span> <span class="c-grey-600">liked
-                              your <span class="text-dark">cover image</span></span></span>
+                        <div class="peer mR-15"></div>
+                        <div class="peer peer-greed"><span>5 requests is pending.</span>
                           <p class="m-0"><small class="fsz-xs">7 mins ago</small></p>
                         </div>
                       </a></li>
                     <li><a href="" class="peers fxw-nw td-n p-20 bdB c-grey-800 cH-blue bgcH-grey-100">
-                        <div class="peer mR-15"><img class="w-3r bdrs-50p" src="https://randomuser.me/api/portraits/men/3.jpg"
-                            alt=""></div>
-                        <div class="peer peer-greed"><span><span class="fw-500">Lee Doe</span> <span class="c-grey-600">commented
-                              on your <span class="text-dark">video</span></span></span>
+                        <div class="peer mR-15"></div>
+                        <div class="peer peer-greed"><span>User "b01s01" is approved and created.</span>
                           <p class="m-0"><small class="fsz-xs">10 mins ago</small></p>
                         </div>
                       </a></li>
@@ -113,10 +113,10 @@
             <li class="dropdown"><a href="" class="dropdown-toggle no-after peers fxw-nw ai-c lh-1" data-toggle="dropdown">
                 <div class="peer mR-10"><img class="w-2r bdrs-50p" src="{{ url('/') }}/img/default_user.png"
                     alt=""></div>
-                <div class="peer"><span class="fsz-sm c-grey-900">App user</span></div>
+                <div class="peer"><span class="fsz-sm c-grey-900">{{ Auth::user()->name }}</span></div>
               </a>
               <ul class="dropdown-menu fsz-sm">
-                <li><a href="" class="d-b td-n pY-5 bgcH-grey-100 c-grey-700"><i class="ti-settings mR-10"></i> <span>Setting</span></a></li>
+                <li><a href="{{ route('setting.index') }}" class="d-b td-n pY-5 bgcH-grey-100 c-grey-700"><i class="ti-settings mR-10"></i> <span>Setting</span></a></li>
                 <li><a href="" class="d-b td-n pY-5 bgcH-grey-100 c-grey-700"><i class="ti-user mR-10"></i> <span>Profile</span></a></li>
                 <li role="separator" class="divider"></li>
                 <li>

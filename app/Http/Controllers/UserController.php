@@ -2,8 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use Uuid;
+use Illuminate\Support\Facades\Hash;
+use Validator;
+
 use Illuminate\Http\Request;
 
+use App\CommonFunctionSet;
 use App\User;
 use App\UserType;
 
@@ -18,7 +23,8 @@ class UserController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+        //$this->middleware('auth');
+        $this->middleware(['auth', '2fa']);
     }
 
     /**
@@ -28,19 +34,6 @@ class UserController extends Controller
      */
     public function index()
     {
-
-        // $search_keyword = $request->keyword;
-        // if (is_null($request->keyword)) {
-        //     $resource_objects = User::paginate(15);
-        // } else {
-        //     $resource_objects = User::SearchByKeyword($request->keyword)->paginate(15);
-        // }
-        // foreach ($resource_objects as $item) {
-        //     $item->load('user_type');
-        //     $item->load('pushmsg_users');
-        //     $item->load('tickets');
-        // }
-
         $dataset = User::paginate($this->paginate);
         $dataset->load('branch_dept', 'user_type');
 
@@ -57,7 +50,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        //
+        return view('user.create');
     }
 
     /**
@@ -68,7 +61,25 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:6|confirmed',
+        ]);
+        if ($validator->fails()) {
+            return redirect()->route('user.create')
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'uuid' => Uuid::generate(4)->string,
+        ]);
+
+        return redirect()->route('user.index')->with('success', 'User has been created.');
     }
 
     /**

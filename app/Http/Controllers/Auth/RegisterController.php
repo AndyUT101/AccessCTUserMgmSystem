@@ -23,7 +23,11 @@ class RegisterController extends Controller
     |
     */
 
-    use RegistersUsers;
+    use RegistersUsers {
+        // change the name of the name of the trait's method in this class
+        // so it does not clash with our own register method
+        register as registration;
+    }
 
     /**
      * Where to redirect users after registration.
@@ -70,32 +74,33 @@ class RegisterController extends Controller
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
             'uuid' => Uuid::generate(4)->string,
+            '2fa_token' => $data['google2fa_secret'],
         ]);
     }
 
-    // public function register(Request $request)
-    // {
-    //     $this->validator($request->all())->validate();
+    public function register(Request $request)
+    {
+        $this->validator($request->all())->validate();
 
-    //     $google2fa = app('pragmarx.google2fa');
-    //     $registration_data = $request->all();
-    //     $registration_data["google2fa_secret"] = $google2fa->generateSecretKey();
+        $google2fa = app('pragmarx.google2fa');
+        $registration_data = $request->all();
+        $registration_data["google2fa_secret"] = $google2fa->generateSecretKey();
 
-    //     $request->session()->flash('registration_data', $registration_data);
+        $request->session()->flash('registration_data', $registration_data);
 
-    //     $QR_Image = $google2fa->getQRCodeInline(
-    //         config('app.name'),
-    //         $registration_data['email'],
-    //         $registration_data['google2fa_secret']
-    //     );
+        $QR_Image = $google2fa->getQRCodeInline(
+            config('app.name'),
+            $registration_data['email'],
+            $registration_data['google2fa_secret']
+        );
 
-    //     return view('google2fa.register', ['QR_Image' => $QR_Image, 'secret' => $registration_data['google2fa_secret']]);
-    // }
+        return view('google2fa.register', ['QR_Image' => $QR_Image, 'secret' => $registration_data['google2fa_secret']]);
+    }
 
-    // public function completeRegistration(Request $request)
-    // {        
-    //     $request->merge(session('registration_data'));
+    public function completeRegistration(Request $request)
+    {        
+        $request->merge(session('registration_data'));
 
-    //     return $this->registration($request);
-    // }
+        return $this->registration($request);
+    }
 }

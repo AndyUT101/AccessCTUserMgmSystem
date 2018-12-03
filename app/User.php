@@ -38,27 +38,27 @@ class User extends Authenticatable
     ];
 
 
-//     /**
-//      * Ecrypt the user's google_2fa secret.
-//      *
-//      * @param  string  $value
-//      * @return string
-//      */
-//     public function set2fa_tokenAttribute($value)
-//     {
-//          $this->attributes['2fa_token'] = encrypt($value);
-//     }
+    /**
+     * Ecrypt the user's google_2fa secret.
+     *
+     * @param  string  $value
+     * @return string
+     */
+    public function set2fa_tokenAttribute($value)
+    {
+         $this->attributes['2fa_token'] = encrypt($value);
+    }
 
-//     /**
-//      * Decrypt the user's google_2fa secret.
-//      *
-//      * @param  string  $value
-//      * @return string
-//      */
-//     public function get2fa_tokenAttribute($value)
-//     {
-//         return decrypt($value);
-//     }
+    /**
+     * Decrypt the user's google_2fa secret.
+     *
+     * @param  string  $value
+     * @return string
+     */
+    public function get2fa_tokenAttribute($value)
+    {
+        return decrypt($value);
+    }
 
     /**
      * Get associated fields
@@ -85,9 +85,19 @@ class User extends Authenticatable
         return $this->hasMany('App\ExecTray', 'user_id');
     }
 
+    public function access_status()
+    {
+        return $this->hasMany('App\AccessStatus', 'user_id');
+    }
+
     public function activities()
     {
         return $this->hasMany('App\Activity', 'user_id');
+    }
+
+    public function push_msgs()
+    {
+        return $this->hasMany('App\PushMsg', 'user_id');
     }
 
     /**

@@ -3,9 +3,28 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Kris\LaravelFormBuilder\FormBuilder;
+use Kris\LaravelFormBuilder\FormBuilderTrait;
+use App\Forms\BranchDeptForm;
+
+use App\BranchDept;
 
 class BranchDeptController extends Controller
 {
+    use FormBuilderTrait;
+
+    protected $paginate = 15;
+
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -13,7 +32,12 @@ class BranchDeptController extends Controller
      */
     public function index()
     {
-        //
+        $dataset = BranchDept::paginate($this->paginate);
+
+        return view('branchdept.index', [
+            'dataset' => $dataset,
+            ]
+        );
     }
 
     /**
@@ -23,7 +47,15 @@ class BranchDeptController extends Controller
      */
     public function create()
     {
-        //
+        $form = $this->form(BranchDeptForm::class, [
+            'method' => 'POST',
+            'route' => 'branchdept.store'
+        ]);
+
+        return view('branchdept.create', [
+            'form' => $form,
+            ]
+        );
     }
 
     /**

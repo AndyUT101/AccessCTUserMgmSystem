@@ -161,6 +161,8 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+        Lavary\Menu\ServiceProvider::class,
+        Kris\LaravelFormBuilder\FormBuilderServiceProvider::class,
     ],
 
     /*
@@ -212,6 +214,8 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         
         'Google2FA' => PragmaRX\Google2FALaravel\Facade::class,
+        'Menu'      => Lavary\Menu\Facade::class,
+        'FormBuilder' => Kris\LaravelFormBuilder\Facades\FormBuilder::class,
     ],
 
 ];

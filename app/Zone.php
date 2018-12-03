@@ -9,6 +9,15 @@ class Zone extends Model
 {
     use SoftDeletes;
 
+     /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'name', 'desc',
+    ];
+
     /**
      * The attributes that should be mutated to dates.
      *

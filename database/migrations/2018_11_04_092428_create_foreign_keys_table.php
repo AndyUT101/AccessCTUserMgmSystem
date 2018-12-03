@@ -33,11 +33,13 @@ class CreateForeignKeysTable extends Migration
         Schema::table('push_msgs', function (Blueprint $table) 
         {
             $table->foreign('msgtpl_id')->references('id')->on('msg_templates');
+            $table->foreign('user_id')->references('id')->on('users');
         });
         
         Schema::table('access_statuses', function (Blueprint $table) 
         {
             $table->foreign('svcequipitem_id')->references('id')->on('svc_equip_items');
+            $table->foreign('user_id')->references('id')->on('users');
         });
         
         Schema::table('svc_equip_items', function (Blueprint $table) 
@@ -95,6 +97,7 @@ class CreateForeignKeysTable extends Migration
         Schema::table('access_statuses', function (Blueprint $table) 
         {
             $table->dropForeign(['svcequipitem_id']);
+            $table->dropForeign(['user_id']);
         });
         
         Schema::table('svc_equip_items', function (Blueprint $table) 

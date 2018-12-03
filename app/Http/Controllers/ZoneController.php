@@ -2,10 +2,31 @@
 
 namespace App\Http\Controllers;
 
+use Validator;
+
 use Illuminate\Http\Request;
+use Kris\LaravelFormBuilder\FormBuilder;
+use Kris\LaravelFormBuilder\FormBuilderTrait;
+use App\Forms\ZoneForm;
+
+use App\Zone;
 
 class ZoneController extends Controller
-{
+{    
+    use FormBuilderTrait;
+
+    protected $paginate = 15;
+
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -13,7 +34,13 @@ class ZoneController extends Controller
      */
     public function index()
     {
-        //
+        $dataset = Zone::paginate($this->paginate);
+
+        return view('zone.index', [
+            'dataset' => $dataset,
+            ]
+        );
+        
     }
 
     /**
@@ -23,7 +50,15 @@ class ZoneController extends Controller
      */
     public function create()
     {
-        //
+        $form = $this->form(ZoneForm::class, [
+            'method' => 'POST',
+            'route' => 'zone.store'
+        ]);
+
+        return view('zone.create', [
+            'form' => $form,
+            ]
+        );
     }
 
     /**
@@ -34,7 +69,23 @@ class ZoneController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255|unique:zones',
+            'desc' => 'required|string',
+        ]);
+        if ($validator->fails()) {
+            return redirect()->route('zone.create')
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        Zone::create([
+            'name' => $request->name,
+            'desc' => $request->desc,
+        ]);
+
+        return redirect()->route('zone.index')->with('success', 'Zone has been created.');
+
     }
 
     /**
@@ -54,9 +105,16 @@ class ZoneController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($id, FormBuilder $formBuilder)
     {
-        //
+        $dataset = Zone::findOrFail($id);
+        $form = $formBuilder->create(ZoneForm::class, [
+            'model' => $dataset,
+            'method' => 'patch',
+            'route' => ['zone.update', $id]
+        ]);
+
+        return view('zone.edit', compact('form'));
     }
 
     /**
@@ -68,7 +126,18 @@ class ZoneController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'name'=>'required',
+            'desc'=> 'required',
+        ]);
+
+        $dataset = Zone::findOrFail($id);
+        $dataset->name = $request->name;
+        $dataset->desc = $request->desc;
+        $dataset->save();
+
+        return redirect()->route('zone.index')
+            ->with('success', 'Record has been updated');
     }
 
     /**

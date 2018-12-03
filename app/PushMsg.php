@@ -25,4 +25,9 @@ class PushMsg extends Model
     {
         return $this->belongsTo('App\MsgTemplate', 'msgtpl_id')->withDefault();
     }
+
+    public function user()
+    {
+        return $this->belongsTo('App\User', 'user_id')->withDefault();
+    }
 }

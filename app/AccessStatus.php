@@ -23,7 +23,12 @@ class AccessStatus extends Model
      */
     public function svc_equip_item()
     {
-        return $this->belongsTo('App\SvcEquipItem', 'svcequipitem_id')->withDefault();
+        return $this->belongsTo('App\SvcEquipItems', 'svcequipitem_id')->withDefault();
+    }
+
+    public function user()
+    {
+        return $this->belongsTo('App\User', 'user_id')->withDefault();
     }
 
     public function exec_trays()

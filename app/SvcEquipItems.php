@@ -17,6 +17,16 @@ class SvcEquipItems extends Model
     protected $dates = ['deleted_at'];
 
     /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'require_parameters' => 'array',
+    ];
+
+
+    /**
      * Get associated fields
      * 
      * @return void
