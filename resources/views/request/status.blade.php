@@ -39,14 +39,15 @@
                         <tr>
                         <td><a href="{{ route('user.show', $data->user->id) }}">{{ $data->user->name }}</a></td>
                         <td>{{ $data->svc_equip_item->name }}</td>
-                        <td>{{ $data->status }}</td>
+                        <td>{{ $data->StatusText }}</td>
                         <td>{{ $data->is_pending === 1 ? "Yes" : "No" }}</td>
                         <td>{{ $data->created_at }}</td>
-                        <td><a href="#">Cancel</a> | <a href="#">Detail</a> | <a href="#">Approve</a> | <a href="#">Reject</a></td>
+                        <td><!--<a href="#">Cancel</a> | --><a href="#">Detail</a>@if ($data->is_pending === 1) | <a href="{{ route('rq.approve', $data->id) }}">Approve</a> | <a href="{{ route('rq.reject', $data->id) }}">Reject</a>@endif</td>
                         </tr>
                         @endforeach
                     </tbody>
                 </table>
+                {{ $dataset->links() }}
             </div>
         </div>
     </div>

@@ -34,17 +34,26 @@ Route::get('/rq/{svcequip_type}/{request_id}/edit', 'RequestController@edit')->n
 Route::delete('/rq/{svcequip_type}/{request_id}', 'RequestController@destroy')->name('rq.destroy');
 Route::get('/rq/{svcequip_type}/{request_id}/apply', 'RequestController@apply')->name('rq.apply');
 Route::get('/rq_status', 'RequestController@status')->name('rq.status');
+Route::get('/recently_msgs', 'UserMsgController@recently_msgs')->name('usermsg.recently');
+Route::get('/rq_approve/{request_id}', 'RequestController@approve_request')->name('rq.approve');
+Route::get('/rq_reject/{request_id}', 'RequestController@reject_request')->name('rq.reject');
 
 
 Route::resource('user', 'UserController');
 Route::resource('zone', 'ZoneController');
 Route::resource('branchdept', 'BranchDeptController');
 Route::resource('setting', 'SettingController');
+Route::resource('usermsg', 'UserMsgController');
+Route::resource('subsystem', 'SvcEquipTypeController');
+Route::resource('subcategory', 'SvcEquipCategoryController');
+Route::resource('requestitem', 'SvcEquipItemsController');
+Route::resource('svcequip', 'SvcEquipController');
+Route::resource('usertype', 'UserTypeController');
+Route::resource('permission', 'PermissionController');
 // Route::resource('rq', 'RequestController');
 //Route::resource('com_req', 'SvcEquipItemsController');
 
 
-Route::view('/com_req', 'request_items.index');
 Route::view('/it_service', 'request_items.service');
 Route::view('/acc_manage', 'management.accountmgm');
 Route::view('/acc_manage/req_newacc', 'management.reqnewacc');

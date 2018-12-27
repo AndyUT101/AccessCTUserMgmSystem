@@ -19,7 +19,7 @@ class UserTypeForm extends Form
 
             ->add('typelevel', 'number', [
                 'label' => 'Type level',
-                'rules' => 'required|max:1',
+                'rules' => 'required|max:50',
                 'error_messages' => [
                     'title.required' => 'The title field is mandatory.'
                 ]

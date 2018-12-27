@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use Validator;
+
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -13,7 +15,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        Validator::extend('without_spaces', function($attr, $value){
+            return preg_match('/^\S*$/u', $value);
+        }, 'Keyname with space is not allowed.');
     }
 
     /**

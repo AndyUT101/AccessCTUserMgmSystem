@@ -2,10 +2,31 @@
 
 namespace App\Http\Controllers;
 
+use Validator;
+
 use Illuminate\Http\Request;
+use Kris\LaravelFormBuilder\FormBuilder;
+use Kris\LaravelFormBuilder\FormBuilderTrait;
+use App\Forms\UserTypeForm;
+
+use App\UserType;
 
 class UserTypeController extends Controller
 {
+    use FormBuilderTrait;
+
+    protected $paginate = 15;
+
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -13,7 +34,13 @@ class UserTypeController extends Controller
      */
     public function index()
     {
-        //
+        $dataset = UserType::orderBy('typelevel', 'desc')->orderBy('name')->paginate($this->paginate);
+        $dataset->load('users');
+
+        return view('usertype.index', [
+            'dataset' => $dataset,
+            ]
+        );
     }
 
     /**
@@ -23,7 +50,15 @@ class UserTypeController extends Controller
      */
     public function create()
     {
-        //
+        $form = $this->form(UserTypeForm::class, [
+            'method' => 'POST',
+            'route' => 'usertype.store'
+        ]);
+
+        return view('usertype.create', [
+            'form' => $form,
+            ]
+        );
     }
 
     /**
@@ -34,7 +69,22 @@ class UserTypeController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|unique:user_types',
+            'typelevel' => 'required|integer|max:100',
+        ]);
+        if ($validator->fails()) {
+            return redirect()->route('usertype.create')
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        UserType::create([
+            'name' => $request->name,
+            'typelevel' => $request->typelevel,
+        ]);
+
+        return redirect()->route('usertype.index')->with('success', 'User type has been created.');
     }
 
     /**
@@ -79,6 +129,10 @@ class UserTypeController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $remove_record = UserType::findOrFail($id);
+        $remove_record->delete();
+
+        return redirect()->route('usertype.index')
+            ->with('success', 'User type has been removed');
     }
 }

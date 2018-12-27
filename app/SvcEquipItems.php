@@ -10,6 +10,16 @@ class SvcEquipItems extends Model
     use SoftDeletes;
 
     /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'svc_equip_id', 'item_category_id', 'name', 'desc',
+        'exec_command', 'require_parameters',
+    ];
+
+    /**
      * The attributes that should be mutated to dates.
      *
      * @var array

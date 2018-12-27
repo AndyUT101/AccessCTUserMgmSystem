@@ -7,10 +7,14 @@ use Auth;
 
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Telegram\Bot\Api;
 
 use App\SvcEquipType;
 use App\SvcEquipItems;
 use App\AccessStatus;
+use App\UserTypeSvcEquip;
+
+use App\CommonFunctionSet;
 
 class RequestController extends Controller
 {
@@ -65,6 +69,12 @@ class RequestController extends Controller
 
         return false;
     }
+
+    private function get_usertype_id()
+    {
+        Auth::user()->load('user_type');
+        return  Auth::user()->user_type->id;
+    }
     
     /**
      * Display a listing of the resource.
@@ -76,10 +86,16 @@ class RequestController extends Controller
         if (!$this->svcequiptype_valid($svcequip_type))
             return redirect()->route('home');
 
-        $dataset = $this->type_record->load('svc_equips.svc_equip_items');
+
+        $dataset = $this->type_record->load('svc_equips.svc_equip_items.svc_equip_category');
+        $dataset = $this->type_record->load(['svc_equips' => function ($query) {
+            $avail_svcequips_keys = collect(UserTypeSvcEquip::where('user_type_id', $this->get_usertype_id())->select('svc_equip_id')->get())->keys();
+            $query->whereIn('id', $avail_svcequips_keys);
+        }]);
+
         return view('request.index', [
-            'dataset' => $dataset,
-            ]
+        'dataset' => $dataset,
+        ]
         );
     }
 
@@ -182,21 +198,75 @@ class RequestController extends Controller
         $new_request->request_enddate = Carbon::now()->addMonths(2);
         $new_request->save();
 
+        CommonFunctionSet::SendApplyMsgToTG($new_request);
+
         return redirect()->route('rq.index', [$svcequip_type])
         ->with('success', 'Request has been submitted');
     }
 
     public function status(Request $request)
     {
-        $dataset = AccessStatus::where('user_id', Auth::user()->id)
-            ->orderby('created_at', 'desc')
-            ->paginate($this->paginate);
+        // if (CommonFunctionSet::RejectUserAccess(10))
+        // {
+        //     return redirect()->route('index')
+        //         ->withErrors(['You have no permission. Contact System Administrator for any inquiry.']);
+        // }
+
+        Auth::user()->load('user_type');
+        $user_typelevel = Auth::user()->user_type->typelevel;
+
+        switch ($user_typelevel)
+        {
+            case 1:
+            case 8:
+                $dataset = AccessStatus::where('user_id', Auth::user()->id)
+                ->orderby('created_at', 'desc')
+                ->paginate($this->paginate);
+                break;
+            default:
+                $dataset = AccessStatus::orderby('created_at', 'desc')
+                ->paginate($this->paginate);
+                break;
+        }
+        
+
+        // $dataset = AccessStatus::where('user_id', Auth::user()->id)
+        //     ->orderby('created_at', 'desc')
+        //     ->paginate($this->paginate);
         $dataset->load('svc_equip_item', 'user', 'exec_trays');
 
         return view('request.status', [
             'dataset' => $dataset,
             ]
         );
+    }
+
+    public function approve_request(Request $request, $request_id)
+    {
+        $dataset = AccessStatus::findOrFail($request_id);
+        $dataset->status = 2;
+        $dataset->is_pending = 0;
+        $dataset->save();
+
+        $dataset->load('user', 'svc_equip_item');
+        CommonFunctionSet::SendSuccessMsgToTG($dataset);
+        
+        return redirect()->route('rq.status')->with('success', 'Request has been approved.');
+    }
+
+    public function reject_request(Request $request, $request_id)
+    {
+        $dataset = AccessStatus::findOrFail($request_id);
+
+        $dataset = AccessStatus::findOrFail($request_id);
+        $dataset->status = 0;
+        $dataset->is_pending = 0;
+        $dataset->save();
+
+        $dataset->load('user', 'svc_equip_item');
+        CommonFunctionSet::SendRejectMsgToTG($dataset);
+        
+        return redirect()->route('rq.status')->with('success', 'Request has been rejected.');
     }
 
     /**

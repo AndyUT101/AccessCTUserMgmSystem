@@ -2,10 +2,31 @@
 
 namespace App\Http\Controllers;
 
+use Validator;
+
 use Illuminate\Http\Request;
+use Kris\LaravelFormBuilder\FormBuilder;
+use Kris\LaravelFormBuilder\FormBuilderTrait;
+use App\Forms\SvcEquipTypeForm;
+
+use App\SvcEquipType;
 
 class SvcEquipTypeController extends Controller
 {
+    use FormBuilderTrait;
+
+    protected $paginate = 15;
+
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -13,7 +34,13 @@ class SvcEquipTypeController extends Controller
      */
     public function index()
     {
-        //
+        $dataset = SvcEquipType::paginate($this->paginate);
+        $dataset->load('svc_equips.svc_equip_items');
+
+        return view('subsystem.index', [
+            'dataset' => $dataset,
+            ]
+        );
     }
 
     /**
@@ -23,7 +50,15 @@ class SvcEquipTypeController extends Controller
      */
     public function create()
     {
-        //
+        $form = $this->form(SvcEquipTypeForm::class, [
+            'method' => 'POST',
+            'route' => 'subsystem.store'
+        ]);
+
+        return view('subsystem.create', [
+            'form' => $form,
+            ]
+        );
     }
 
     /**
@@ -34,7 +69,24 @@ class SvcEquipTypeController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'keyname' => 'required|string|without_spaces|max:255|unique:svc_equip_types',
+            'name' => 'required|string|max:255',
+            'desc' => 'required|string',
+        ]);
+        if ($validator->fails()) {
+            return redirect()->route('subsystem.create')
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        SvcEquipType::create([
+            'keyname' => $request->keyname,
+            'name' => $request->name,
+            'desc' => $request->desc,
+        ]);
+
+        return redirect()->route('subsystem.index')->with('success', 'Subsystem has been created.');
     }
 
     /**
@@ -45,7 +97,8 @@ class SvcEquipTypeController extends Controller
      */
     public function show($id)
     {
-        //
+        $dataset = SvcEquipType::findOrFail($id);
+        return view('subsystem.show', compact('dataset')); 
     }
 
     /**
@@ -54,9 +107,16 @@ class SvcEquipTypeController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($id, FormBuilder $formBuilder)
     {
-        //
+        $dataset = SvcEquipType::findOrFail($id);
+        $form = $formBuilder->create(SvcEquipTypeForm::class, [
+            'model' => $dataset,
+            'method' => 'patch',
+            'route' => ['subsystem.update', $id]
+        ]);
+
+        return view('subsystem.edit', compact('form'));
     }
 
     /**
@@ -68,7 +128,18 @@ class SvcEquipTypeController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'name'=>'required',
+            'desc'=> 'required',
+        ]);
+
+        $dataset = SvcEquipType::findOrFail($id);
+        $dataset->name = $request->name;
+        $dataset->desc = $request->desc;
+        $dataset->save();
+
+        return redirect()->route('subsystem.index')
+            ->with('success', 'Record has been updated');
     }
 
     /**
@@ -79,6 +150,10 @@ class SvcEquipTypeController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $remove_record = SvcEquipType::findOrFail($id);
+        $remove_record->delete();
+
+        return redirect()->route('subsystem.index')
+            ->with('success', 'Record has been removed');
     }
 }

@@ -60,10 +60,14 @@
           <li class="nav-item dropdown"><a class="dropdown-toggle" href="javascript:void(0);"><span class="icon-holder"><i
                   class="c-purple-500 ti-settings"></i> </span><span class="title">Setting</span> <span class="arrow"><i class="ti-angle-right"></i></span></a>
             <ul class="dropdown-menu">
-              <li><a href="{{ url('com_req') }}">Request management</a></li>
-              <li><a href="#">Branch and department</a></li>
+              <li><a href="{{ route('requestitem.index') }}">Request management</a></li>
+              <li><a href="{{ route('subsystem.index') }}">Request Type / Subsystem</a></li>
+              <li><a href="{{ route('subcategory.index') }}">Request sub-categories</a></li>
+              <li><a href="{{ route('svcequip.index') }}">Service/Equip List</a></li>
+              <li><a href="{{ route('branchdept.index') }}">Branch and department</a></li>
               <li><a href="#">Login management</a></li>
               <li><a href="{{ route('user.index') }}">User list</a></li>
+              <li><a href="{{ route('usertype.index') }}">User Type list</a></li>
               <li><a href="{{ route('zone.index') }}">Zone list</a></li>
             </ul>
           </li>

@@ -85,7 +85,6 @@ class ZoneController extends Controller
         ]);
 
         return redirect()->route('zone.index')->with('success', 'Zone has been created.');
-
     }
 
     /**
@@ -96,7 +95,8 @@ class ZoneController extends Controller
      */
     public function show($id)
     {
-        //
+        $dataset = Zone::findOrFail($id);
+        return view('zone.show', compact('dataset')); 
     }
 
     /**
@@ -148,6 +148,11 @@ class ZoneController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $remove_record = Zone::findOrFail($id);
+        $remove_record->delete();
+
+        return redirect()->route('zone.index')
+            ->with('success', 'Record has been removed');
+        
     }
 }

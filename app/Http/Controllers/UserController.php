@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use Auth;
 use Uuid;
 use Illuminate\Support\Facades\Hash;
 use Validator;
 
 use Illuminate\Http\Request;
+use Kris\LaravelFormBuilder\FormBuilder;
+use Kris\LaravelFormBuilder\FormBuilderTrait;
+use App\Forms\UserForm;
 
 use App\CommonFunctionSet;
 use App\User;
@@ -14,6 +18,8 @@ use App\UserType;
 
 class UserController extends Controller
 {
+    use FormBuilderTrait;
+
     protected $paginate = 15;
 
     /**
@@ -50,6 +56,16 @@ class UserController extends Controller
      */
     public function create()
     {
+        $form = $this->form(UserForm::class, [
+            'method' => 'POST',
+            'route' => 'user.store'
+        ], ['active_user' => Auth::user()]);
+
+        return view('user.create', [
+            'form' => $form,
+            ]
+        );
+
         return view('user.create');
     }
 
@@ -62,9 +78,9 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|size:6',
             'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:6|confirmed',
+            // 'password' => 'required|string|min:6|confirmed',
         ]);
         if ($validator->fails()) {
             return redirect()->route('user.create')
@@ -75,7 +91,7 @@ class UserController extends Controller
         User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => Hash::make($request->password),
+            'password' => Hash::make($request->name),
             'uuid' => Uuid::generate(4)->string,
         ]);
 
@@ -90,7 +106,8 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        //
+        $dataset = User::findOrFail($id);
+        return view('user.show', compact('dataset')); 
     }
 
     /**
@@ -99,9 +116,16 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($id, FormBuilder $formBuilder)
     {
-        //
+        $dataset = User::findOrFail($id);
+        $form = $formBuilder->create(UserForm::class, [
+            'model' => $dataset,
+            'method' => 'patch',
+            'route' => ['user.update', $id]
+        ], ['active_user' => Auth::user()]);
+
+        return view('user.edit', compact('form'));
     }
 
     /**
@@ -113,7 +137,26 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            // 'name' => 'required|string|size:6',
+            'email' => 'required|string|email|max:255|unique:users,email,'.$id,
+            // 'password' => 'required|string|min:6|confirmed',
+        ]);
+        if ($validator->fails()) {
+            return redirect()->route('user.create')
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        $dataset = User::findOrFail($id);
+        $dataset->email = $request->email;
+        $dataset->first_name = $request->first_name;
+        $dataset->last_name = $request->last_name;
+        $dataset->usertype_id = $request->usertype_id;
+        $dataset->is_disable = $request->is_disable ? 1 : 0;
+        $dataset->save();
+
+        return redirect()->route('user.index')->with('success', 'User has been updated.');
     }
 
     /**
@@ -124,6 +167,10 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $remove_record = User::findOrFail($id);
+        $remove_record->delete();
+
+        return redirect()->route('user.index')
+            ->with('success', 'User has been removed');
     }
 }

@@ -163,6 +163,7 @@ return [
 
         Lavary\Menu\ServiceProvider::class,
         Kris\LaravelFormBuilder\FormBuilderServiceProvider::class,
+        Telegram\Bot\Laravel\TelegramServiceProvider::class,
     ],
 
     /*
@@ -216,6 +217,7 @@ return [
         'Google2FA' => PragmaRX\Google2FALaravel\Facade::class,
         'Menu'      => Lavary\Menu\Facade::class,
         'FormBuilder' => Kris\LaravelFormBuilder\Facades\FormBuilder::class,
+        'Telegram'  => Telegram\Bot\Laravel\Facades\Telegram::class,
     ],
 
 ];

@@ -28,7 +28,7 @@
                 <table class="table table-bordered">
                     <thead>
                         <tr>
-                            <th scope="col" width="50">Category</th>
+                            <th scope="col" width="100">Sub-Category</th>
                             <th scope="col">Item</th>
                             <th scope="col">Request</th>
                         </tr>
@@ -36,9 +36,9 @@
                     <tbody>
                         @foreach ($svc_equip->svc_equip_items as $svc_equip_item)
                         <tr>
-                            <td><span class="badge badge-danger">Reporting</span></td>
+                            <td><span class="badge badge-danger">{{ $svc_equip_item->svc_equip_category->name }}</span></td>
                             <td>{{ $svc_equip_item->name }} <a href="{{ route('rq.show', [$dataset->keyname, $svc_equip_item->id]) }}">[Detail]</a></td>
-                            <td><a class="btn btn-primary" href="{{ route('rq.apply', [$dataset->keyname, $svc_equip_item->id]) }}" role="button">Request</a></td>
+                            <td><a class="btn btn-secondary" href="{{ route('rq.apply', [$dataset->keyname, $svc_equip_item->id]) }}" role="button">Request</a></td>
                         </tr>
                         @endforeach
                     </tbody>

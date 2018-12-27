@@ -77,7 +77,8 @@ class BranchDeptController extends Controller
      */
     public function show($id)
     {
-        //
+        $dataset = BranchDept::findOrFail($id);
+        return view('branchdept.show', compact('dataset')); 
     }
 
     /**
@@ -111,6 +112,10 @@ class BranchDeptController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $remove_record = BranchDept::findOrFail($id);
+        $remove_record->delete();
+
+        return redirect()->route('branchdept.index')
+            ->with('success', 'Record has been removed');
     }
 }

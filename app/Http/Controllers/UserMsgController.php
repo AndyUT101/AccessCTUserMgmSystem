@@ -4,8 +4,20 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use App\UserMsg;
+
 class UserMsgController extends Controller
 {
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -34,7 +46,7 @@ class UserMsgController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        return route('usermsg.index');
     }
 
     /**
@@ -80,5 +92,10 @@ class UserMsgController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function recently_msgs(Request $request) 
+    {
+        return UserMsg::all()->toJson(JSON_PRETTY_PRINT);
     }
 }

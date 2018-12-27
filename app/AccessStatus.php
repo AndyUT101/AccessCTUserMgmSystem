@@ -35,4 +35,17 @@ class AccessStatus extends Model
     {
         return $this->hasMany('App\ExecTray', 'acsstatus_id');
     }
+
+    public function getStatusTextAttribute()
+    {
+        switch ($this->status) 
+        {
+            case 1:
+                return "Active";
+            case 2:
+                return "Approved";
+            default:
+                return "Closed";
+        }
+    }
 }

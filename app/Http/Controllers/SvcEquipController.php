@@ -2,10 +2,33 @@
 
 namespace App\Http\Controllers;
 
+use Validator;
+use Auth;
+
 use Illuminate\Http\Request;
+
+use App\SvcEquip;
+
 
 class SvcEquipController extends Controller
 {
+    protected $paginate = 15;
+
+    protected $type_record;
+    protected $svc_equip_item;
+
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware(['auth']);
+        // $this->middleware(['auth', '2fa']);
+    }
+
+
     /**
      * Display a listing of the resource.
      *
@@ -13,7 +36,12 @@ class SvcEquipController extends Controller
      */
     public function index()
     {
-        //
+        $dataset = SvcEquip::paginate($this->paginate);
+
+        return view('svcequip.index', [
+            'dataset' => $dataset,
+            ]
+        );
     }
 
     /**

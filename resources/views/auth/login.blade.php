@@ -32,5 +32,8 @@
             <div class="peer"><button type="submit" class="btn btn-danger">Login</button></div>
           </div>
         </div>
+        <div class="form-group">
+            <a href="{{ url('password/reset') }}" alt="Forget password">Forget password</a>
+        </div>
       </form>
 @endsection
