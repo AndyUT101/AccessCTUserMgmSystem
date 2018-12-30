@@ -73,6 +73,7 @@ class SvcEquipTypeController extends Controller
             'keyname' => 'required|string|without_spaces|max:255|unique:svc_equip_types',
             'name' => 'required|string|max:255',
             'desc' => 'required|string',
+            'is_accessright' => 'required',
         ]);
         if ($validator->fails()) {
             return redirect()->route('subsystem.create')
@@ -84,6 +85,8 @@ class SvcEquipTypeController extends Controller
             'keyname' => $request->keyname,
             'name' => $request->name,
             'desc' => $request->desc,
+            'is_accessright' => $request->is_accessright ? 1 : 0,
+
         ]);
 
         return redirect()->route('subsystem.index')->with('success', 'Subsystem has been created.');
@@ -136,6 +139,7 @@ class SvcEquipTypeController extends Controller
         $dataset = SvcEquipType::findOrFail($id);
         $dataset->name = $request->name;
         $dataset->desc = $request->desc;
+        $dataset->is_accessright = $request->is_accessright ? 1 : 0;
         $dataset->save();
 
         return redirect()->route('subsystem.index')

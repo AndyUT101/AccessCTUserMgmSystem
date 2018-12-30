@@ -6,6 +6,7 @@ use Illuminate\Auth\Events\Login;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
+use App\Activity;
 
 class LogSuccessfulLogin
 {
@@ -29,5 +30,11 @@ class LogSuccessfulLogin
     {
         $event->user->last_login = date('Y-m-d H:i:s');
         $event->user->save();
+
+        $activity = new Activity();
+        $activity->user_id = $event->user->id;
+        $activity->activity_key = 'login_event';
+        $activity->activity = '';
+        $activity->save();
     }
 }

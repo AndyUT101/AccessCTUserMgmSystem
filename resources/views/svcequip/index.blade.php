@@ -3,7 +3,7 @@
 @section('content')
 <div class="container-fluid">
     <h4 class="c-grey-900 mT-10 mB-30">Service/Equip List</h4>
-    <p>Action: <a href="{{ route('zone.create') }}">Add</a></p>
+    <p>Action: <a href="{{ route('svcequip.create') }}">Add</a></p>
     @if(\Session::has('success'))
     <div class="alert alert-success">
         {{ Session::get('success') }}
@@ -33,8 +33,8 @@
                     <tbody>
                     @foreach ($dataset as $item)
                         <tr>
-                            <td><a href="{{ route('zone.edit', $item->id) }}">[Edit]</a></td>
-                            <td><a href="{{ route('zone.show', $item->id) }}">{{ $item->name }}</a></td>
+                            <td><a href="{{ route('svcequip.edit', $item->id) }}">[Edit]</a></td>
+                            <td><a href="{{ route('svcequip.show', $item->id) }}">{{ $item->name }}</a></td>
                             <td>{{ $item->desc }}</td>
                         </tr>
                         @endforeach

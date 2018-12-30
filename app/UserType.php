@@ -34,4 +34,9 @@ class UserType extends Model
     {
         return $this->hasMany('App\User', 'usertype_id');
     }
+
+    public function usertype_svcequip()
+    {
+        return $this->hasMany('App\UserTypeSvcEquip', 'user_type_id');
+    }
 }

@@ -19,6 +19,7 @@ class CreateAccessStatusesTable extends Migration
             $table->unsignedInteger('user_id');
             $table->unsignedInteger('status');
             $table->unsignedTinyInteger('is_pending')->default(1);
+            $table->json('require_parameters');
             $table->dateTime('request_enddate');
             $table->softDeletes();
             $table->timestamps();

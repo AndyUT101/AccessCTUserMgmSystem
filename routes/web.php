@@ -37,6 +37,8 @@ Route::get('/rq_status', 'RequestController@status')->name('rq.status');
 Route::get('/recently_msgs', 'UserMsgController@recently_msgs')->name('usermsg.recently');
 Route::get('/rq_approve/{request_id}', 'RequestController@approve_request')->name('rq.approve');
 Route::get('/rq_reject/{request_id}', 'RequestController@reject_request')->name('rq.reject');
+Route::get('/set_2fa', 'UserController@setEnhancedAuth')->name('user.2fa');
+Route::post('/set_2fa', 'UserController@setEnhancedAuth')->name('user.2fa');
 
 
 Route::resource('user', 'UserController');
@@ -50,6 +52,7 @@ Route::resource('requestitem', 'SvcEquipItemsController');
 Route::resource('svcequip', 'SvcEquipController');
 Route::resource('usertype', 'UserTypeController');
 Route::resource('permission', 'PermissionController');
+Route::resource('useraccess', 'AccessStatusController');
 // Route::resource('rq', 'RequestController');
 //Route::resource('com_req', 'SvcEquipItemsController');
 

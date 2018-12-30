@@ -32,6 +32,11 @@ class SvcEquipTypeForm extends Form
                     'title.required' => 'The title field is mandatory.'
                 ]
             ])
+
+            ->add('is_accessright', 'checkbox', [
+                'label' => 'Is Access Right item',
+                'value' => 1,
+            ])
             
             ->add('submit', 'submit', [
                 'label' => 'Save'

@@ -90,10 +90,6 @@ class CommonFunctionSet extends Model
 
     /*
      * Permission functions
-     * 
-     * 
-     * 
-     * 
      */
     public static function RejectUserAccess($required_level)
     {

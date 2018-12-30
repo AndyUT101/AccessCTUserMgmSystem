@@ -10,11 +10,29 @@ class AccessStatus extends Model
     use SoftDeletes;
 
     /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'require_parameters',
+    ];
+
+    /**
      * The attributes that should be mutated to dates.
      *
      * @var array
      */
-    protected $dates = ['deleted_at'];
+    protected $dates = ['request_enddate', 'deleted_at'];
+
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'require_parameters' => 'array',
+    ];
 
     /**
      * Get associated fields
@@ -44,8 +62,10 @@ class AccessStatus extends Model
                 return "Active";
             case 2:
                 return "Approved";
+            case 5:
+                return "Granted";
             default:
-                return "Closed";
+                return "Rejected";
         }
     }
 }

@@ -13,6 +13,8 @@ use App\SvcEquipType;
 use App\SvcEquipItems;
 use App\AccessStatus;
 use App\UserTypeSvcEquip;
+use App\BranchDept;
+use App\User;
 
 use App\CommonFunctionSet;
 
@@ -86,10 +88,9 @@ class RequestController extends Controller
         if (!$this->svcequiptype_valid($svcequip_type))
             return redirect()->route('home');
 
-
         $dataset = $this->type_record->load('svc_equips.svc_equip_items.svc_equip_category');
-        $dataset = $this->type_record->load(['svc_equips' => function ($query) {
-            $avail_svcequips_keys = collect(UserTypeSvcEquip::where('user_type_id', $this->get_usertype_id())->select('svc_equip_id')->get())->keys();
+        $avail_svcequips_keys = collect(UserTypeSvcEquip::where('user_type_id', $this->get_usertype_id())->select('svc_equip_id')->get())->pluck('svc_equip_id');
+        $dataset = $this->type_record->load(['svc_equips' => function ($query) use($avail_svcequips_keys) {
             $query->whereIn('id', $avail_svcequips_keys);
         }]);
 
@@ -196,6 +197,7 @@ class RequestController extends Controller
         $new_request->user_id = Auth::user()->id;
         $new_request->status = 1;
         $new_request->request_enddate = Carbon::now()->addMonths(2);
+        $new_request->require_parameters = [];
         $new_request->save();
 
         CommonFunctionSet::SendApplyMsgToTG($new_request);
@@ -206,35 +208,30 @@ class RequestController extends Controller
 
     public function status(Request $request)
     {
-        // if (CommonFunctionSet::RejectUserAccess(10))
-        // {
-        //     return redirect()->route('index')
-        //         ->withErrors(['You have no permission. Contact System Administrator for any inquiry.']);
-        // }
-
-        Auth::user()->load('user_type');
-        $user_typelevel = Auth::user()->user_type->typelevel;
-
-        switch ($user_typelevel)
+        $record_mode = $request->get('mode', '');
+        
+        switch ($record_mode)
         {
-            case 1:
-            case 8:
+            case 'me':
                 $dataset = AccessStatus::where('user_id', Auth::user()->id)
                 ->orderby('created_at', 'desc')
                 ->paginate($this->paginate);
-                break;
+            break;
             default:
-                $dataset = AccessStatus::orderby('created_at', 'desc')
-                ->paginate($this->paginate);
-                break;
+                $dataset = AccessStatus::whereIn('user_id', $this->get_granted_userlist())
+                    ->orderby('created_at', 'desc')
+                    ->paginate($this->paginate);
+            break;
         }
-        
 
-        // $dataset = AccessStatus::where('user_id', Auth::user()->id)
-        //     ->orderby('created_at', 'desc')
-        //     ->paginate($this->paginate);
-        $dataset->load('svc_equip_item', 'user', 'exec_trays');
-
+        Auth::user()->load('user_type');
+        $user_typelevel = Auth::user()->user_type->typelevel;
+        $dataset->load('user', 'exec_trays');
+        $dataset->load(['svc_equip_item.svc_equip.usertype_svcequip' => function ($query) use($user_typelevel) 
+            {
+                $query->where('user_type_id', $user_typelevel);
+            }
+        ]);
         return view('request.status', [
             'dataset' => $dataset,
             ]
@@ -285,5 +282,45 @@ class RequestController extends Controller
 
         return redirect()->route('rq.index', $svcequip_type, $request_id)
             ->with('success', 'Record has been updated');
+    }
+
+
+    /* 
+     * Permission
+     */
+    private function get_granted_userlist()
+    {
+        $grant_userlist = collect();
+        $curruser_records = Auth::user()->load('user_type', 'branch_dept');
+
+        $grant_userlist->push(Auth::user()->id);
+        switch ($curruser_records->user_type->typelevel)
+        {
+            case 1:
+            case 6:
+            break;
+
+            case 2:
+            case 5:
+                if ($current_records->branch_dept->type != null)
+                $grant_userlist = $grant_userlist->merge(collect(User::where('branchdept_id', $current_records->branch_dept->type)->get())->pluck('id')->toArray());
+            break;
+
+            case 3:
+                if ($current_records->branch_dept->zone_id != null)
+                {
+                    $avilable_zonebranchKey = collect(BranchDept::where('zone_id', $current_records->branch_dept->zone_id)->get())->pluck('id');
+                    $grant_userlist = $grant_userlist->merge(collect(User::whereIn('branchdept_id', $avilable_zonebranchKey)->get())->pluck('id')->toArray());
+                }
+            break;
+
+            case 4:
+            case 7:
+            case 8:
+                $grant_userlist = $grant_userlist->merge(collect(User::where('branchdept_id', '<>', null)->get())->pluck('id')->toArray());
+            break;
+        }
+
+        return $grant_userlist->unique()->values()->all();
     }
 }

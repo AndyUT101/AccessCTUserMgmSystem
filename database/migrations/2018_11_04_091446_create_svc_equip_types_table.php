@@ -18,6 +18,7 @@ class CreateSvcEquipTypesTable extends Migration
             $table->string('keyname')->unique();
             $table->string('name');
             $table->text('desc');
+            $table->unsignedTinyInteger('is_accessright')->default(0);
             $table->softDeletes();
             $table->timestamps();
         });

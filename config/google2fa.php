@@ -13,7 +13,7 @@ return [
      * In case you need your users to be asked for a new one time passwords from time to time.
      */
 
-    'lifetime' => 2, // 0 = eternal
+    'lifetime' => 0, // 0 = eternal
 
     /*
      * Renew lifetime at every new request.
@@ -46,7 +46,7 @@ return [
     /*
      * Forbid user to reuse One Time Passwords.
      */
-    'forbid_old_passwords' => false,
+    'forbid_old_passwords' => true,
 
     /*
      * User's table column for google2fa secret

@@ -148,7 +148,7 @@ class SvcEquipItemsController extends Controller
         $dataset->name = $request->name;
         $dataset->desc = $request->desc;
         $dataset->exec_command = $request->exec_command;
-        $dataset->require_parameters = '{}';
+        $dataset->require_parameters = ['test'=>'test',];
         $dataset->save();
 
         return redirect()->route('requestitem.index')

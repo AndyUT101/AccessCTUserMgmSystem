@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Kris\LaravelFormBuilder\FormBuilder;
 use Kris\LaravelFormBuilder\FormBuilderTrait;
 use App\Forms\UserForm;
+use App\Forms\EnhancedAuthForm;
 
 use App\CommonFunctionSet;
 use App\User;
@@ -172,5 +173,48 @@ class UserController extends Controller
 
         return redirect()->route('user.index')
             ->with('success', 'User has been removed');
+    }
+
+    public function setEnhancedAuth(Request $request)
+    {
+        $fa_key = $request->post('fa-key', '');
+        $user_secret = $request->post('user-secret', '');
+        $show_error = false;
+
+        $google2fa = app('pragmarx.google2fa');
+        $google2fa_secret = ($fa_key === '') ? $google2fa->generateSecretKey() : $fa_key;
+
+        if ($fa_key !== '')
+        {
+            $valid = $google2fa->verifyKey($fa_key, $user_secret);
+            if ($valid)
+            {
+                Auth::user()->set2FAToken($fa_key);
+                Auth::user()->save();
+
+                Auth::logout();
+                return redirect('/');
+            }
+
+            $show_error = true;
+        }
+
+        $form = $this->form(EnhancedAuthForm::class, [
+            'method' => 'POST',
+            'route' => 'user.2fa'
+        ],  ['fa_key' => $google2fa_secret]);
+
+        $QR_Image = $google2fa->getQRCodeInline(
+            config('app.name'),
+            Auth::user()->email,
+            $google2fa_secret
+        );
+
+        return view('google2fa.register', [
+            'QR_Image' => $QR_Image, 
+            'secret' => $google2fa_secret,
+            'form' => $form,
+            'show_error' => $show_error,
+        ]);
     }
 }

@@ -6,12 +6,17 @@ use Validator;
 use Auth;
 
 use Illuminate\Http\Request;
+use Kris\LaravelFormBuilder\FormBuilder;
+use Kris\LaravelFormBuilder\FormBuilderTrait;
+use App\Forms\SvcEquipForm;
 
 use App\SvcEquip;
 
 
 class SvcEquipController extends Controller
 {
+    use FormBuilderTrait;
+
     protected $paginate = 15;
 
     protected $type_record;
@@ -51,7 +56,15 @@ class SvcEquipController extends Controller
      */
     public function create()
     {
-        //
+        $form = $this->form(SvcEquipForm::class, [
+            'method' => 'POST',
+            'route' => 'svcequip.store'
+        ]);
+
+        return view('svcequip.create', [
+            'form' => $form,
+            ]
+        );
     }
 
     /**
@@ -62,7 +75,26 @@ class SvcEquipController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'svc_equiptype_id' => 'required|exists:svc_equip_types,id',
+            'keyname' => 'required|string|max:255|unique:svc_equips',
+            'name' => 'required|string|max:255',
+            'desc' => 'required|string',
+        ]);
+        if ($validator->fails()) {
+            return redirect()->route('svcequip.create')
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        SvcEquip::create([
+            'svc_equiptype_id' => $request->svc_equiptype_id,
+            'keyname' => $request->keyname,
+            'name' => $request->name,
+            'desc' => $request->desc,
+        ]);
+
+        return redirect()->route('svcequip.index')->with('success', 'service/equipment item has been created.');
     }
 
     /**

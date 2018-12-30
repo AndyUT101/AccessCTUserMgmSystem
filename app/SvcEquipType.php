@@ -15,7 +15,7 @@ class SvcEquipType extends Model
      * @var array
      */
     protected $fillable = [
-        'keyname', 'name', 'desc',
+        'keyname', 'name', 'desc', 'is_accessright',
     ];
 
     /**

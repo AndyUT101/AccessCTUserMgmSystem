@@ -3,14 +3,14 @@
 @section('content')
 <div class="container">
     <div class="row">
-        <div class="col-md-8 col-md-offset-2">
+        <div class="col-md-12 col-md-offset-2">
             <div class="panel panel-default">
-                <div class="panel-heading">Register</div>
+                <h4>2-Step Verification</h4>
                 @if ($errors->has('message') > 0)
-                <li><strong>{{ $errors->first('message') }}</strong></li>
 
-                    <span class="invalid-feedback" role="alert">
-                    </span>
+                <div class="alert alert-danger">
+                    <span>{{ $errors->first('message') }}</span>
+                </div>
                 @endif
 
                 <div class="panel-body">
@@ -18,16 +18,16 @@
                         {{ csrf_field() }}
 
                         <div class="form-group">
-                            <label for="one_time_password" class="col-md-4 control-label">One Time Password</label>
+                            <label for="one_time_password" class="control-label">Please enter your One Time Password</label>
 
-                            <div class="col-md-6">
-                                <input id="one_time_password" type="number" class="form-control" name="one_time_password" required autofocus>
+                            <div>
+                                <input id="one_time_password" type="number" class="form-control" name="one_time_password" maxlength="6" size="6" required autofocus>
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <div class="col-md-6 col-md-offset-4">
-                                <button type="submit" class="btn btn-primary">
+                            <div>
+                                <button type="submit" class="btn btn-secondary">
                                     Login
                                 </button>
                             </div>

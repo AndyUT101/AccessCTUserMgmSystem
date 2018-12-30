@@ -51,12 +51,12 @@
           <li class="nav-item dropdown"><a class="dropdown-toggle" href="javascript:void(0);"><span class="icon-holder"><i class="c-brown-500 ti-id-badge"></i>
               </span><span class="title">User management</span> <span class="arrow"><i class="ti-angle-right"></i></span></a>
             <ul class="dropdown-menu">
-              <li><a href="#">Access right control</a></li>
-              <li><a href="{{ url('acc_manage') }}">Account management</a></li>
+              <li><a href="{{ route('useraccess.index') }}">Access right management</a></li>
             </ul>
           </li>
           <li class="nav-item"><a class="sidebar-link" href="{{ route('rq.status') }}"><span class="icon-holder"><i class="c-red-600 ti-files"></i>
               </span><span class="title">Request tray</span></a></li>
+          @if (Auth::user()->load('user_type')->user_type->typelevel >= 7)
           <li class="nav-item dropdown"><a class="dropdown-toggle" href="javascript:void(0);"><span class="icon-holder"><i
                   class="c-purple-500 ti-settings"></i> </span><span class="title">Setting</span> <span class="arrow"><i class="ti-angle-right"></i></span></a>
             <ul class="dropdown-menu">
@@ -71,6 +71,7 @@
               <li><a href="{{ route('zone.index') }}">Zone list</a></li>
             </ul>
           </li>
+          @endif
         </ul>
       </div>
     </div>
@@ -79,9 +80,6 @@
         <div class="header-container">
           <ul class="nav-left">
             <li><a id="sidebar-toggle" class="sidebar-toggle" href="javascript:void(0);"><i class="ti-menu"></i></a></li>
-            <li class="search-box"><a class="search-toggle no-pdd-right" href="javascript:void(0);"><i class="search-icon ti-search pdd-right-10"></i>
-                <i class="search-icon-close ti-close pdd-right-10"></i></a></li>
-            <li class="search-input"><input class="form-control" type="text" placeholder="Search..."></li>
           </ul>
           <ul class="nav-right">
             <li class="notifications dropdown"><span class="counter bgc-red">3</span> <a href="" class="dropdown-toggle no-after"
@@ -121,7 +119,7 @@
               </a>
               <ul class="dropdown-menu fsz-sm">
                 <li><a href="{{ route('setting.index') }}" class="d-b td-n pY-5 bgcH-grey-100 c-grey-700"><i class="ti-settings mR-10"></i> <span>Setting</span></a></li>
-                <li><a href="" class="d-b td-n pY-5 bgcH-grey-100 c-grey-700"><i class="ti-user mR-10"></i> <span>Profile</span></a></li>
+                <li><a href="{{ route('user.show', Auth::user()->id) }}" class="d-b td-n pY-5 bgcH-grey-100 c-grey-700"><i class="ti-user mR-10"></i> <span>Profile</span></a></li>
                 <li role="separator" class="divider"></li>
                 <li>
                   <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="d-b td-n pY-5 bgcH-grey-100 c-grey-700"><i class="ti-power-off mR-10"></i> <span>{{ __('Logout') }}</span></a></li>

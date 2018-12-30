@@ -109,4 +109,14 @@ class User extends Authenticatable
     {
         return ($this->last_login == null) ? "" : $this->last_login->diffForHumans();
     }
+
+    public function getEnhancedAuthMethodAttribute()
+    {
+        return ($this->attributes['2fa_token'] !== '');
+    }
+
+    public function set2FAToken($token)
+    {
+        $this->attributes['2fa_token'] = $token;
+    }
 }

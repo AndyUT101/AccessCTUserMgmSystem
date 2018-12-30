@@ -35,7 +35,6 @@ class SvcEquipItems extends Model
         'require_parameters' => 'array',
     ];
 
-
     /**
      * Get associated fields
      * 
@@ -54,5 +53,11 @@ class SvcEquipItems extends Model
     public function svc_equip_category()
     {
         return $this->belongsTo('App\SvcEquipCategory', 'item_category_id')->withDefault();
+    }
+
+    public function is_accessright_item()
+    {
+        $this->load('svc_equip.svc_equiptype');
+        return $this->svc_equip->svc_equiptype->is_accessright === 1;
     }
 }
