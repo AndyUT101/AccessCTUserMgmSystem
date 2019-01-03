@@ -9,8 +9,8 @@ class MySettingForm extends Form
     public function buildForm()
     {
         $this
-            ->add('2fa_token', 'text', [
-                'label' => '2FA code',
+            ->add('tg_usertoken', 'text', [
+                'label' => 'Telegram user chat id',
                 'rules' => 'required|min:5',
                 'error_messages' => [
                     'title.required' => 'The title field is mandatory.'

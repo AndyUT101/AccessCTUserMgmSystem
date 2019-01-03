@@ -200,7 +200,15 @@ class RequestController extends Controller
         $new_request->require_parameters = [];
         $new_request->save();
 
-        CommonFunctionSet::SendApplyMsgToTG($new_request);
+        $msg_parameters = array 
+        (
+            'user' => Auth::user()->name,
+            'request_name' => $this->svc_equip_item->name,
+            'request_date' => (new Carbon($new_request->created_at))->toDateTimeString(),
+        );
+        CommonFunctionSet::PushMessageToQueue(Auth::user()->id, 'apply-success', $msg_parameters);  
+        
+        //CommonFunctionSet::SendApplyMsgToTG($new_request);
 
         return redirect()->route('rq.index', [$svcequip_type])
         ->with('success', 'Request has been submitted');
@@ -246,8 +254,15 @@ class RequestController extends Controller
         $dataset->save();
 
         $dataset->load('user', 'svc_equip_item');
-        CommonFunctionSet::SendSuccessMsgToTG($dataset);
-        
+
+        $msg_parameters = array 
+        (
+            'user' => Auth::user()->name,
+            'request_name' => $dataset->svc_equip_item->name,
+            'request_date' => (new Carbon($dataset->svc_equip_item->created_at))->toDateTimeString(),
+        );
+        CommonFunctionSet::PushMessageToQueue(Auth::user()->id, 'request-approved', $msg_parameters);    
+
         return redirect()->route('rq.status')->with('success', 'Request has been approved.');
     }
 
@@ -261,7 +276,16 @@ class RequestController extends Controller
         $dataset->save();
 
         $dataset->load('user', 'svc_equip_item');
-        CommonFunctionSet::SendRejectMsgToTG($dataset);
+
+        $msg_parameters = array 
+        (
+            'user' => Auth::user()->name,
+            'request_name' => $dataset->svc_equip_item->name,
+            'request_date' => (new Carbon($dataset->svc_equip_item->created_at))->toDateTimeString(),
+        );
+        CommonFunctionSet::PushMessageToQueue(Auth::user()->id, 'request-rejected', $msg_parameters);    
+
+        //CommonFunctionSet::SendRejectMsgToTG($dataset);
         
         return redirect()->route('rq.status')->with('success', 'Request has been rejected.');
     }
@@ -322,5 +346,13 @@ class RequestController extends Controller
         }
 
         return $grant_userlist->unique()->values()->all();
+    }
+
+
+    public function tg()
+    {
+        return CommonFunctionSet::GetTGMsg();
+
+        return "test";
     }
 }

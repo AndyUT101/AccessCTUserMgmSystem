@@ -6,6 +6,8 @@ use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use Telegram\Bot\Api;
 
+use App\CommonFunctionSet;
+
 class Kernel extends ConsoleKernel
 {
     /**
@@ -32,6 +34,12 @@ class Kernel extends ConsoleKernel
         // { 
         //     $this->TestTelegramBot(); 
         // })->everyMinute();
+
+        $schedule->call(function () 
+        { 
+            CommonFunctionSet::ProcessMessageFromQueue(); 
+        })
+        ->everyMinute();
     }
 
     /**

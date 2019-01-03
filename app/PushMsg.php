@@ -17,6 +17,15 @@ class PushMsg extends Model
     protected $dates = ['deleted_at'];
 
     /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'parameters' => 'array',
+    ];
+
+    /**
      * Get associated fields
      * 
      * @return void

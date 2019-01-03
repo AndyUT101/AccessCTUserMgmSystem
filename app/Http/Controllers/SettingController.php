@@ -93,15 +93,15 @@ class SettingController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            '2fa_token'=>'required',
+            'tg_usertoken'=>'required',
         ]);
 
-        // $dataset = User::findOrFail(Auth::user()->id);
-        // $dataset->2fa_token = $request['2fa_token'];
-        // $dataset->save();
+        $dataset = User::findOrFail(Auth::user()->id);
+        $dataset->tg_usertoken = $request['tg_usertoken'];
+        $dataset->save();
 
-        // return redirect()->route('setting.my')
-        //     ->with('success', 'Record has been updated');
+        return redirect()->route('setting.my')
+            ->with('success', 'Record has been updated');
     }
 
     /**

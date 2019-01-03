@@ -18,6 +18,12 @@
                 <a class="btn btn-success" href="{{ route('user.2fa') }}" role="button">Enable 2FA auth</a> 
                 @endif
             </div>
+            <div class="col-md-10"></div>
+            <div class="col-md-4">
+            <h4>Other user setting</h4>
+            {!! form($form) !!}
+            </div>
+
             </div>
             </div>
         </div>
