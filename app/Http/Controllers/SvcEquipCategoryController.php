@@ -24,7 +24,7 @@ class SvcEquipCategoryController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware(['auth', '2fa']);
     }
 
     /**
@@ -105,9 +105,16 @@ class SvcEquipCategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($id, FormBuilder $formBuilder)
     {
-        //
+        $dataset = SvcEquipCategory::findOrFail($id);
+        $form = $formBuilder->create(SvcEquipCategoryForm::class, [
+            'model' => $dataset,
+            'method' => 'patch',
+            'route' => ['subcategory.update', $id]
+        ]);
+
+        return view('subcategory.edit', compact('form'));
     }
 
     /**
@@ -119,7 +126,20 @@ class SvcEquipCategoryController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'keyname' => 'required|string|max:255|unique:svc_equip_categories',
+            'name' => 'required|string|max:255',
+            'desc' => 'required|string',
+        ]);
+
+        $dataset = SvcEquipCategory::findOrFail($id);
+        $dataset->keyname = $request->keyname;
+        $dataset->name = $request->name;
+        $dataset->desc = $request->desc;
+        $dataset->save();
+
+        return redirect()->route('subcategory.index')
+            ->with('success', 'Record has been updated');
     }
 
     /**

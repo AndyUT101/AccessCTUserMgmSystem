@@ -26,7 +26,7 @@ class PermissionController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware(['auth', '2fa']);
     }
 
     /**
@@ -156,13 +156,6 @@ class PermissionController extends Controller
         UserTypeSvcEquip::where('svc_equip_id', $svcequip_id)->whereNotIn('user_type_id', array_keys($post_records))->delete();
         return redirect()->route('requestitem.index')
             ->with('success', 'Permission has been updated');
-
-        // $request->validate([
-        //     'name'=>'required',
-        //     'desc'=> 'required',
-        // ]);
-
-        
     }
 
     /**

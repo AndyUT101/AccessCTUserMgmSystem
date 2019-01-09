@@ -6,6 +6,8 @@ use Validator;
 use Auth;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Input;
+
 use Carbon\Carbon;
 use Telegram\Bot\Api;
 
@@ -208,8 +210,6 @@ class RequestController extends Controller
         );
         CommonFunctionSet::PushMessageToQueue(Auth::user()->id, 'apply-success', $msg_parameters);  
         
-        //CommonFunctionSet::SendApplyMsgToTG($new_request);
-
         return redirect()->route('rq.index', [$svcequip_type])
         ->with('success', 'Request has been submitted');
     }
@@ -241,6 +241,25 @@ class RequestController extends Controller
             }
         ]);
         return view('request.status', [
+            'dataset' => $dataset->appends(Input::except('page')),
+            ]
+        );
+    }
+
+    public function request_detail($access_id)
+    {
+        $dataset = AccessStatus::findOrFail($access_id);
+
+        Auth::user()->load('user_type');
+        $user_typelevel = Auth::user()->user_type->typelevel;
+        $dataset->load('user', 'exec_trays');
+        $dataset->load(['svc_equip_item.svc_equip.usertype_svcequip' => function ($query) use($user_typelevel) 
+            {
+                $query->where('user_type_id', $user_typelevel);
+            }
+        ]);
+
+        return view('request.detail', [
             'dataset' => $dataset,
             ]
         );
@@ -253,15 +272,21 @@ class RequestController extends Controller
         $dataset->is_pending = 0;
         $dataset->save();
 
-        $dataset->load('user', 'svc_equip_item');
+        $dataset->load('user', 'svc_equip_item.svc_equip');
 
-        $msg_parameters = array 
-        (
-            'user' => Auth::user()->name,
-            'request_name' => $dataset->svc_equip_item->name,
-            'request_date' => (new Carbon($dataset->svc_equip_item->created_at))->toDateTimeString(),
-        );
-        CommonFunctionSet::PushMessageToQueue(Auth::user()->id, 'request-approved', $msg_parameters);    
+        $pushmsg_useridlist = $this->get_pushmsg_userlist($dataset->user, $dataset->svc_equip_item->svc_equip);
+        foreach ($pushmsg_useridlist as $user_id)
+        {
+            $msg_parameters = array 
+            (
+                'user' => User::find($user_id)->name,
+                'request_user' => $dataset->user->name,
+                'request_name' => $dataset->svc_equip_item->name,
+                'request_date' => (new Carbon($dataset->svc_equip_item->created_at))->toDateTimeString(),
+            );
+
+            CommonFunctionSet::PushMessageToQueue($user_id, 'request-approved', $msg_parameters);    
+        }
 
         return redirect()->route('rq.status')->with('success', 'Request has been approved.');
     }
@@ -277,14 +302,19 @@ class RequestController extends Controller
 
         $dataset->load('user', 'svc_equip_item');
 
-        $msg_parameters = array 
-        (
-            'user' => Auth::user()->name,
-            'request_name' => $dataset->svc_equip_item->name,
-            'request_date' => (new Carbon($dataset->svc_equip_item->created_at))->toDateTimeString(),
-        );
-        CommonFunctionSet::PushMessageToQueue(Auth::user()->id, 'request-rejected', $msg_parameters);    
+        $pushmsg_useridlist = $this->get_pushmsg_userlist($dataset->user, $dataset->svc_equip_item->svc_equip);
+        foreach ($pushmsg_useridlist as $user_id)
+        {
+            $msg_parameters = array 
+            (
+                'user' => User::find($user_id)->name,
+                'request_user' => $dataset->user->name,
+                'request_name' => $dataset->svc_equip_item->name,
+                'request_date' => (new Carbon($dataset->svc_equip_item->created_at))->toDateTimeString(),
+            );
 
+            CommonFunctionSet::PushMessageToQueue($user_id, 'request-rejected', $msg_parameters);    
+        }
         //CommonFunctionSet::SendRejectMsgToTG($dataset);
         
         return redirect()->route('rq.status')->with('success', 'Request has been rejected.');
@@ -348,6 +378,40 @@ class RequestController extends Controller
         return $grant_userlist->unique()->values()->all();
     }
 
+    private function get_pushmsg_userlist($user, $svc_equip)
+    {
+        $pushmsg_user = collect();
+        $curruser_records = $user->load('user_type', 'branch_dept');
+        $pushmsg_user->push($user->id);
+        
+        switch ($curruser_records->user_type->typelevel)
+        {
+            case 1:
+            break;
+
+            case 2:
+                $pushmsg_user = $pushmsg_user->merge(collect(User::whereIn('usertype_id', [6, 7, 8])->get())->pluck('id')->toArray());
+            break;
+
+            case 3:
+                $pushmsg_user = $pushmsg_user->merge(collect(User::whereIn('usertype_id', [6, 7, 8])->get())->pluck('id')->toArray());
+
+                $avilable_zonebranchKey = collect(BranchDept::where('zone_id', $user->branch_dept->zone_id)->get())->pluck('id');
+                $pushmsg_user = $pushmsg_user->merge(collect(User::whereIn('branchdept_id', $avilable_zonebranchKey)
+                    ->where('usertype_id', 2)->get())->pluck('id')->toArray());
+            break;
+
+            case 4:
+                $pushmsg_user = $pushmsg_user->merge(collect(User::whereIn('usertype_id', [2, 3, 4, 6, 7, 8])->get())->pluck('id')->toArray());
+            break;
+
+            case 5:
+                $pushmsg_user = $pushmsg_user->merge(collect(User::whereIn('usertype_id', [2, 3, 5, 6, 7, 8])->get())->pluck('id')->toArray());
+            break;
+        }
+
+        return $pushmsg_user->unique()->values()->all();
+    }
 
     public function tg()
     {

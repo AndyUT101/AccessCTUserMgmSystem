@@ -65,7 +65,6 @@
               <li><a href="{{ route('subcategory.index') }}">Request sub-categories</a></li>
               <li><a href="{{ route('svcequip.index') }}">Service/Equip List</a></li>
               <li><a href="{{ route('branchdept.index') }}">Branch and department</a></li>
-              <li><a href="#">Login management</a></li>
               <li><a href="{{ route('user.index') }}">User list</a></li>
               <li><a href="{{ route('usertype.index') }}">User Type list</a></li>
               <li><a href="{{ route('zone.index') }}">Zone list</a></li>
@@ -82,36 +81,6 @@
             <li><a id="sidebar-toggle" class="sidebar-toggle" href="javascript:void(0);"><i class="ti-menu"></i></a></li>
           </ul>
           <ul class="nav-right">
-            <li class="notifications dropdown"><span class="counter bgc-red">3</span> <a href="" class="dropdown-toggle no-after"
-                data-toggle="dropdown"><i class="ti-bell"></i></a>
-              <ul class="dropdown-menu">
-                <li class="pX-20 pY-15 bdB"><i class="ti-bell pR-10"></i> <span class="fsz-sm fw-600 c-grey-900">Notifications</span></li>
-                <li>
-                  <ul class="ovY-a pos-r scrollable lis-n p-0 m-0 fsz-sm">
-                    <li><a href="" class="peers fxw-nw td-n p-20 bdB c-grey-800 cH-blue bgcH-grey-100">
-                        <div class="peer mR-15"></div>
-                        <div class="peer peer-greed"><span>You haven't set the Google 2FA yet. Click here to setup.</span>
-                          <p class="m-0"><small class="fsz-xs">5 mins ago</small></p>
-                        </div>
-                      </a></li>
-                    <li><a href="" class="peers fxw-nw td-n p-20 bdB c-grey-800 cH-blue bgcH-grey-100">
-                        <div class="peer mR-15"></div>
-                        <div class="peer peer-greed"><span>5 requests is pending.</span>
-                          <p class="m-0"><small class="fsz-xs">7 mins ago</small></p>
-                        </div>
-                      </a></li>
-                    <li><a href="" class="peers fxw-nw td-n p-20 bdB c-grey-800 cH-blue bgcH-grey-100">
-                        <div class="peer mR-15"></div>
-                        <div class="peer peer-greed"><span>User "b01s01" is approved and created.</span>
-                          <p class="m-0"><small class="fsz-xs">10 mins ago</small></p>
-                        </div>
-                      </a></li>
-                  </ul>
-                </li>
-                <li class="pX-20 pY-15 ta-c bdT"><span><a href="" class="c-grey-600 cH-blue fsz-sm td-n">View All
-                      Notifications <i class="ti-angle-right fsz-xs mL-10"></i></a></span></li>
-              </ul>
-            </li>
             <li class="dropdown"><a href="" class="dropdown-toggle no-after peers fxw-nw ai-c lh-1" data-toggle="dropdown">
                 <div class="peer mR-10"><img class="w-2r bdrs-50p" src="{{ url('/') }}/img/default_user.png"
                     alt=""></div>

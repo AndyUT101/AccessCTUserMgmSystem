@@ -24,7 +24,7 @@ class AccessStatusController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware(['auth', '2fa']);
     }
 
     /**
@@ -89,6 +89,7 @@ class AccessStatusController extends Controller
             ->paginate($this->paginate);
         
         return view('useraccess.show', [
+            'user' => $user_data,
             'dataset' => $dataset,
             ]
         );
@@ -151,7 +152,8 @@ class AccessStatusController extends Controller
 
         $this->accstatus_dataset->load('branch_dept', 'user_type');
         $this->accstatus_dataset->load(['access_status.svc_equip_item', 'access_status' => function ($query) use($accright_itemid, $user_id) {
-            $query->where('is_pending', 1);
+            $query->where('is_pending', 0);
+            $query->where('status', 2);
             $query->whereIn('svcequipitem_id', $accright_itemid);
             $query->where('request_enddate', '>=', Carbon::today());
             if ($user_id != 0)

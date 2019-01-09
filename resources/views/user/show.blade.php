@@ -28,11 +28,10 @@
                 </div>
                 <h4 class="c-grey-900 mB-20">{{ $dataset->name }}</h4>
                 <div>
-                <p><strong>Request name</strong> : {{ $dataset->name }}</p>
+                <p><strong>User name</strong> : {{ $dataset->name }}</p>
 
-                <p><strong>Request description</strong> : </p>
-                <p>{!! nl2br($dataset->desc) !!}</p>
-
+                <p><strong>User full name</strong> : {{ $dataset->first_name }} {{ $dataset->last_name }}</p>
+                <p><strong>User status</strong> : @if($dataset->is_disable == 1) Disable @else Active @endif</p>
                 </div>
             </div>
         </div>

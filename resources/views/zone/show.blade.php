@@ -28,9 +28,9 @@
                 </div>
                 <h4 class="c-grey-900 mB-20">{{ $dataset->name }}</h4>
                 <div>
-                <p><strong>Request name</strong> : {{ $dataset->name }}</p>
+                <p><strong>Zone name</strong> : {{ $dataset->name }}</p>
 
-                <p><strong>Request description</strong> : </p>
+                <p><strong>Zone description</strong> : </p>
                 <p>{!! nl2br($dataset->desc) !!}</p>
 
                 </div>

@@ -17,14 +17,16 @@
             <div class="col-md-3">
                 <div class="layers bd bgc-white p-20">
                     <div class="layer w-100 mB-10">
-                        <h6 class="lh-1">My Tickets</h6>
+                        <h6 class="lh-1">My Access Right</h6>
                     </div>
                     <div class="layer w-100">
                         <div class="peers ai-sb fxw-nw">
                             <div class="peer peer-greed">
                             </div>
                             <div class="peer">
-                                <span class="d-ib lh-0 va-m fw-600 bdrs-10em pX-15 pY-15 bgc-green-50 c-green-500">xxx</span>
+                            <a href="{{ route('useraccess.show', Auth::user()->id) }}">
+                                <span class="d-ib lh-0 va-m fw-600 bdrs-10em pX-15 pY-15 bgc-green-50 c-green-500">{{ $access_right_count }}</span>
+                            </a>
                             </div>
                         </div>
                     </div>
@@ -37,17 +39,17 @@
         <div class="bd bgc-white">
             <div class="layers">
                 <div class="layer w-100 p-20">
-                    <h6 class="lh-1">Current Request Status</h6>
+                    <h6 class="lh-1">Current Pending Request</h6>
                 </div>
                 <div class="layer w-100">
                     <div class="bgc-light-blue-500 c-white p-20">
                         <div class="peers ai-c jc-sb gap-40">
                             <div class="peer peer-greed">
-                                <h5>Article Count</h5>
-                                <p class="mB-0">Untill xxx</p>
+                                <h5>Pending Requests</h5>
+                                <p class="mB-0">Untill today</p>
                             </div>
                             <div class="peer">
-                                <h3 class="text-right">xxx</h3>
+                                <h3 class="text-right">{{ $pending_request }}</h3>
                             </div>
                         </div>
                     </div>
@@ -55,22 +57,24 @@
                         <table class="table">
                             <thead>
                                 <tr>
-                                    <th class="bdwT-0">Article</th>
-                                    <th class="bdwT-0">Written by</th>
+                                    <th class="bdwT-0">Request</th>
+                                    <th class="bdwT-0">Request date</th>
                                 </tr>
                             </thead>
                             <tbody>
+                            @foreach ($pending_records as $pending_record)
                                 <tr>
-                                    <td class="fw-600"><a href="xxx">xxx</td>
-                                    <td>xxx</td>
+                                    <td class="fw-600"><a href="{{ route('rq.detail', $pending_record->id) }}">{{ $pending_record->svc_equip_item->name }}</td>
+                                    <td>{{ $pending_record->created_at  }}</td>
                                 </tr>
+                            @endforeach
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
             <div class="ta-c bdT w-100 p-20">
-                <a href="xxx">Check all the article</a>
+                <a href="{{ route('rq.status', ['mode' => 'me']) }}">Check all the request</a>
             </div>
         </div>
     </div>

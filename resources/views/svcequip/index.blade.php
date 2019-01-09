@@ -26,15 +26,15 @@
                     <thead>
                         <tr>
                             <th scope="col">#</th>
-                            <th scope="col">Zone name</th>
-                            <th scope="col">Zone description</th>
+                            <th scope="col">Service/Equipment name</th>
+                            <th scope="col">Service/Equipment description</th>
                         </tr>
                     </thead>
                     <tbody>
                     @foreach ($dataset as $item)
                         <tr>
                             <td><a href="{{ route('svcequip.edit', $item->id) }}">[Edit]</a></td>
-                            <td><a href="{{ route('svcequip.show', $item->id) }}">{{ $item->name }}</a></td>
+                            <td>{{ $item->name }}</td>
                             <td>{{ $item->desc }}</td>
                         </tr>
                         @endforeach

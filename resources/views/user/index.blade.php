@@ -3,12 +3,12 @@
 @section('content')
 <div class="container-fluid">
     <h4 class="c-grey-900 mT-10 mB-30">User List</h4>
-    <p>Show user by: ALL | <a href="#">Disabled</a> | <a href="#">Branch</a> | <a href="#">Department</a></p>
+    <p>Show user by: <a href="{{ route('user.index') }}">ALL</a> | <a href="{{ route('user.index', ['mode' => 'disabled']) }}">Disabled</a> | <a href="{{ route('user.index', ['mode' => 'branch']) }}">Branch</a> | <a href="{{ route('user.index', ['mode' => 'dept']) }}">Department</a></p>
     <div class="row">
         <div class="col-md-12">
             <div class="bgc-white bd bdrs-3 p-20 mB-20">
                 <!-- <h4 class="c-grey-900 mB-20">Simple Table</h4> -->
-                <p>Action: <a href="{{ route('user.create') }}">Add</a> | <a href="#">Remove</a> | <a href="#">Modify</a> | <a href="#">Disable</a></p>
+                <p>Action: <a href="{{ route('user.create') }}">Add</a></p>
                 <table class="table table-bordered">
                     <thead>
                         <tr>

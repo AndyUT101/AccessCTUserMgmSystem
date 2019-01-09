@@ -3,7 +3,7 @@
 @section('content')
 <div class="container-fluid">
     <h4 class="c-grey-900 mT-10 mB-30">Request Status</h4>
-    <p><a href="{{ route('rq.status') }}">Current requests</a> | <a href="{{ route('rq.status', ['mode' => 'me']) }}">Show only my request</a> | In progress request <a href="#" class="badge badge-danger">9</a></p>
+    <p><a href="{{ route('rq.status') }}">Current requests</a> | <a href="{{ route('rq.status', ['mode' => 'me']) }}">Show only my request</a></p>
     @if(\Session::has('success'))
     <div class="alert alert-success">
         {{ Session::get('success') }}
@@ -21,7 +21,6 @@
     <div class="row">
         <div class="col-md-12">
             <div class="bgc-white bd bdrs-3 p-20 mB-20">
-                <p>Action: <a href="#">Request multple items</a></p>
                 <h4 class="c-grey-900 mB-20"></h4>
                 <table class="table table-bordered">
                     <thead>
@@ -47,7 +46,7 @@
                         <td>{{ $data->StatusText }}</td>
                         <td>{{ $data->is_pending === 1 ? "Yes" : "No" }}</td>
                         <td>{{ $data->created_at }}</td>
-                        <td><!--<a href="#">Cancel</a> | --><a href="#">Detail</a>@if ($data->is_pending === 1 && $has_approve_right) | <a href="{{ route('rq.approve', $data->id) }}">Approve</a> | <a href="{{ route('rq.reject', $data->id) }}">Reject</a>@endif</td>
+                        <td><!--<a href="#">Cancel</a> | --><a href="{{ route('rq.detail', $data->id) }}">Detail</a>@if ($data->is_pending === 1 && $has_approve_right) | <a href="{{ route('rq.approve', $data->id) }}">Approve</a> | <a href="{{ route('rq.reject', $data->id) }}">Reject</a>@endif</td>
                         </tr>
                         @endforeach
                     </tbody>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Auth;
 use Uuid;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Input;
 use Validator;
 
 use Illuminate\Http\Request;
@@ -16,6 +17,7 @@ use App\Forms\EnhancedAuthForm;
 use App\CommonFunctionSet;
 use App\User;
 use App\UserType;
+use App\BranchDept;
 
 class UserController extends Controller
 {
@@ -39,13 +41,29 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $dataset = User::paginate($this->paginate);
+        $record_mode = $request->get('mode', '');
+        switch ($record_mode)
+        {
+            case 'disabled':
+                $dataset = User::where('is_disable', 1)->paginate($this->paginate);
+            break;
+            case 'branch':
+                $branch_keys = collect(BranchDept::where('type', 'branch')->get())->pluck('id');
+                $dataset = User::whereIn('branchdept_id', $branch_keys)->paginate($this->paginate);
+            break;
+            case 'dept':
+                $dept_keys = collect(BranchDept::where('type', 'dept')->get())->pluck('id');
+                $dataset = User::whereIn('branchdept_id', $dept_keys)->paginate($this->paginate);
+            break;            
+            default:
+                $dataset = User::paginate($this->paginate);
+            break;
+        }
         $dataset->load('branch_dept', 'user_type');
-
         return view('user.index', [
-            'dataset' => $dataset,
+            'dataset' => $dataset->appends(Input::except('page')),
             ]
         );
     }

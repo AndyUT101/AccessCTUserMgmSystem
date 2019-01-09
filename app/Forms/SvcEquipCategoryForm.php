@@ -26,7 +26,7 @@ class SvcEquipCategoryForm extends Form
             ])
 
             ->add('desc', 'textarea', [
-                'label' => 'Zone description',
+                'label' => 'Category description',
                 'rules' => 'required|min:5',
                 'error_messages' => [
                     'title.required' => 'The title field is mandatory.'

@@ -18,7 +18,7 @@ class MsgTemplate extends Form
             ])
 
             ->add('desc', 'content', [
-                'label' => 'Zone description',
+                'label' => 'Message description',
                 'rules' => 'required|min:5',
                 'error_messages' => [
                     'title.required' => 'The title field is mandatory.'

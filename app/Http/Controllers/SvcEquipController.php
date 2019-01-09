@@ -114,9 +114,16 @@ class SvcEquipController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($id, FormBuilder $formBuilder)
     {
-        //
+        $dataset = SvcEquip::findOrFail($id);
+        $form = $formBuilder->create(SvcEquipForm::class, [
+            'model' => $dataset,
+            'method' => 'patch',
+            'route' => ['svcequip.update', $id]
+        ]);
+
+        return view('svcequip.edit', compact('form'));
     }
 
     /**
@@ -128,7 +135,23 @@ class SvcEquipController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'svc_equiptype_id' => 'required|exists:svc_equip_types,id',
+            'keyname' => 'required|string|max:255|unique:svc_equips,keyname'.$id,
+            'name' => 'required|string|max:255',
+            'desc' => 'required|string',
+        ]);
+
+        $dataset = SvcEquip::findOrFail($id);
+        $dataset->svc_equiptype_id = $request->svc_equiptype_id;
+        $dataset->keyname = $request->keyname;
+        $dataset->name = $request->name;
+        $dataset->desc = $request->desc;
+        $dataset->save();
+
+        return redirect()->route('svcequip.index')
+            ->with('success', 'Record has been updated');
+
     }
 
     /**

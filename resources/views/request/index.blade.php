@@ -3,7 +3,6 @@
 @section('content')
 <div class="container-fluid">
     <h4 class="c-grey-900 mT-10 mB-30">Request {{ $dataset->name }}</h4>
-    <p><a href="#">Request history</a> | In progress request <a href="#" class="badge badge-danger">9</a></p>
     @if(\Session::has('success'))
     <div class="alert alert-success">
         {{ Session::get('success') }}
@@ -21,7 +20,6 @@
     <div class="row">
         <div class="col-md-12">
             <div class="bgc-white bd bdrs-3 p-20 mB-20">
-                <p>Action: <a href="#">Request multple items</a></p>
                 @foreach ($dataset->svc_equips as $svc_equip)
                 @if (count($svc_equip->svc_equip_items) > 0)
                 <h4 class="c-grey-900 mB-20">{{ $svc_equip->name }}</h4>

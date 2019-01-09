@@ -34,8 +34,8 @@
                     @foreach ($dataset as $item)
                         <tr>
                             <td><a href="{{ route('subcategory.edit', $item->id) }}">[Edit]</a></td>
-                            <td><a href="{{ route('subcategory.show', $item->id) }}">{{ $item->name }}</a></td>
                             <td>{{ $item->name }}</td>
+                            <td>{{ $item->desc }}</td>
                         </tr>
                     @endforeach
                     </tbody>

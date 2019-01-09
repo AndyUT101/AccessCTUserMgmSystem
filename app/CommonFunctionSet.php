@@ -192,7 +192,7 @@ class CommonFunctionSet extends Model
             $email_sendsuccess = false;
             if ($user_record->tg_usertoken != '')
             {
-                $bot_apikey = '542520829:AAGVBs-ZXApVczq2l-2VNDEi8u4fte8ADyE';
+                $bot_apikey = '643549455:AAFpUJiqdMVN-GExKonUFL-FBq5jbzrgZsw';
                 $tg_chatid = $user_record->tg_usertoken;
                 try
                 {
@@ -205,11 +205,11 @@ class CommonFunctionSet extends Model
                 } 
                 catch (\Exception $e)
                 {
-                    return $e;
+                    //return $e;
                 }
                 catch (Throwable $e)
                 {
-                    return $e;
+                    //return $e;
                 }
             }
 
@@ -226,11 +226,11 @@ class CommonFunctionSet extends Model
                 }
                 catch (\Exception $e)
                 {
-                    return $e;
+                    //return $e;
                 }
                 catch (Throwable $e)
                 {
-                    return $e;
+                    //return $e;
                 }
             }
 

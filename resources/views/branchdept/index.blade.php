@@ -3,7 +3,7 @@
 @section('content')
 <div class="container-fluid">
     <h4 class="c-grey-900 mT-10 mB-30">Branch/Department List</h4>
-    <p>Action: <a href="{{ route('zone.create') }}">Add</a></p>
+    <p>Action: <a href="{{ route('branchdept.create') }}">Add</a></p>
     @if(\Session::has('success'))
     <div class="alert alert-success">
         {{ Session::get('success') }}

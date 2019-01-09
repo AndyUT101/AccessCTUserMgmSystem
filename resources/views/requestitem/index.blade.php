@@ -3,7 +3,6 @@
 @section('content')
 <div class="container-fluid">
     <h4 class="c-grey-900 mT-10 mB-30">Request item</h4>
-    <p><a href="#">Request history</a> | In progress request <a href="#" class="badge badge-danger">9</a></p>
     @if(\Session::has('success'))
     <div class="alert alert-success">
         {{ Session::get('success') }}

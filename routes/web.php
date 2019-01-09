@@ -34,6 +34,7 @@ Route::get('/rq/{svcequip_type}/{request_id}/edit', 'RequestController@edit')->n
 Route::delete('/rq/{svcequip_type}/{request_id}', 'RequestController@destroy')->name('rq.destroy');
 Route::get('/rq/{svcequip_type}/{request_id}/apply', 'RequestController@apply')->name('rq.apply');
 Route::get('/rq_status', 'RequestController@status')->name('rq.status');
+Route::get('/rq_status/{access_id}', 'RequestController@request_detail')->name('rq.detail');
 Route::get('/recently_msgs', 'UserMsgController@recently_msgs')->name('usermsg.recently');
 Route::get('/rq_approve/{request_id}', 'RequestController@approve_request')->name('rq.approve');
 Route::get('/rq_reject/{request_id}', 'RequestController@reject_request')->name('rq.reject');

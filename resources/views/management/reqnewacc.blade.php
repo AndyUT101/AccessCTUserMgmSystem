@@ -8,7 +8,6 @@
         <div class="col-md-12">
             <div class="bgc-white bd bdrs-3 p-20 mB-20">
                 <!-- <h4 class="c-grey-900 mB-20">Simple Table</h4> -->
-                <p>Action: <a href="#">Request multple items</a></p>
                 <table class="table table-bordered">
                     <thead>
                         <tr>
