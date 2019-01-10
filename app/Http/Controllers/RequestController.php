@@ -356,14 +356,14 @@ class RequestController extends Controller
 
             case 2:
             case 5:
-                if ($current_records->branch_dept->type != null)
-                $grant_userlist = $grant_userlist->merge(collect(User::where('branchdept_id', $current_records->branch_dept->type)->get())->pluck('id')->toArray());
+                if ($curruser_records->branch_dept->type != null)
+                $grant_userlist = $grant_userlist->merge(collect(User::where('branchdept_id', $curruser_records->branch_dept->type)->get())->pluck('id')->toArray());
             break;
 
             case 3:
-                if ($current_records->branch_dept->zone_id != null)
+                if ($curruser_records->branch_dept->zone_id != null)
                 {
-                    $avilable_zonebranchKey = collect(BranchDept::where('zone_id', $current_records->branch_dept->zone_id)->get())->pluck('id');
+                    $avilable_zonebranchKey = collect(BranchDept::where('zone_id', $curruser_records->branch_dept->zone_id)->get())->pluck('id');
                     $grant_userlist = $grant_userlist->merge(collect(User::whereIn('branchdept_id', $avilable_zonebranchKey)->get())->pluck('id')->toArray());
                 }
             break;

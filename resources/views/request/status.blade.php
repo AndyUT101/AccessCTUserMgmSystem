@@ -35,6 +35,9 @@
                     </thead>
                     <tbody>
                         @foreach ($dataset as $data)
+                        @php
+                           $has_approve_right = false;
+                        @endphp
                         @if (count($data->svc_equip_item->svc_equip->usertype_svcequip) > 0)
                         @php
                             $has_approve_right = $data->svc_equip_item->svc_equip->usertype_svcequip->first()->approve_right == 1;
